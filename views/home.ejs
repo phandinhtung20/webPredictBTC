@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>BTC predict</title>
+	<style type="text/css">
+	.chart {
+		background: white;
+		width: 320;
+		height: 200px;
+		border: 1px dotted #555;
+		padding: 20px 20px 20px 20px;
+	}
+
+	body, html {
+		height: 100%;
+	}
+	</style>
+</head>
+<body>
+	<h1>Bitcoin predict</h1>
+	<svg viewBox="0 0 320 200" class="chart">
+	   	<polyline
+			fill="none"
+			stroke="#0000ff"
+			stroke-width="2"
+			points="
+			0,<%= 200 - Math.round((realData[5] - min)/(max-min)*200)%>
+			40,<%= 200 - Math.round((realData[6] - min)/(max-min)*200)%>
+			"
+	   	/>
+		<circle cx="40" cy="<%= 200 - Math.round((realData[6] - min)/(max-min)*200)%>" r="4" stroke="black" stroke-width="2"/>
+		<circle cx="0" cy="<%= 200 - Math.round((realData[5] - min)/(max-min)*200)%>" r="4" stroke="black" stroke-width="2"/>
+
+	   	<polyline
+			fill="none"
+			stroke="#ff0000"
+			stroke-width="2"
+			points="
+			40,<%= 200 - Math.round((realData[6] - min)/(max-min)*200)%>
+			<% for (var i = 0; i < predict.length; i++) {%>
+				<%= (80 + i*40)%>,<%= 200 - Math.round((predict[i] - min)/(max-min)*200)%>
+			<%}%>
+			"
+	   	/>
+		<% for (var i = 0; i < predict.length; i++) {%>
+			<circle cx="<%= (80 + i*40)%>" cy="<%= 200 - Math.round((predict[i] - min)/(max-min)*200)%>" r="4" stroke="black" stroke-width="2"/>
+		<%}%>
+
+	   	<line x1="0" y1="<%= 200 - Math.round((realData[6] - min)/(max-min)*200)%>" x2="320" y2="<%= 200 - Math.round((realData[6] - min)/(max-min)*200)%>" style="stroke:rgb(0,255,0);stroke-width:1" />
+		<text x="0" y="<%= 198 - Math.round((realData[6] - min)/(max-min)*200)%>" fill="red">Now: <%= Math.round(realData[6])%></text>
+
+	   	<line x1="0" y1="<%= 200 - Math.round((max - min)/(max-min)*200)%>" x2="320" y2="<%= 200 - Math.round((max - min)/(max-min)*200)%>" style="stroke:rgb(0,255,255);stroke-width:1" />
+   		<text x="200" y="<%= 198 - Math.round((max - min)/(max-min)*200)%>%>" fill="red">Max: <%= Math.round(max)%></text>
+	</svg>
+	<div>
+		<ul>
+			<li> Now: <%= Math.round(realData[6])%></li>
+			<% for (var i = 0; i < predict.length; i++) {%>
+				<li> Next + <%=(i+1)%> days: <%= Math.round(predict[i])%>
+					<% if(Math.round(predict[i]) == Math.round(max)) {%> - MAXIMUM <%}%>
+				</li>
+			<%}%>
+		</ul>
+		<% if ((max - realData[6])/realData[6] >= 0.1) {%>
+			<h3>Nên mua</h3>
+			<p>Now: <%= Math.round(realData[6])%>, Maximum: <%= Math.round(max)%>=<%= Math.round(max/realData[6]*100)%>% (now) > 110%</p>
+		<%}%>
+	</div>
+</body>
+</html>
